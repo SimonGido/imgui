@@ -593,7 +593,27 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
     return true;
 }
+void ImGui_ImplVulkan_DestroyFontImage()
+{
+    ImGui_ImplVulkan_InitInfo* v = &g_VulkanInitInfo;
+    vkDeviceWaitIdle(v->Device);
 
+    if (g_FontView)
+    {
+        vkDestroyImageView(v->Device, g_FontView, v->Allocator);
+        g_FontView = VK_NULL_HANDLE;
+    }
+    if (g_FontImage)
+    {
+        vkDestroyImage(v->Device, g_FontImage, v->Allocator);
+        g_FontImage = VK_NULL_HANDLE;
+    }
+    if (g_FontMemory)
+    {
+        vkFreeMemory(v->Device, g_FontMemory, v->Allocator);
+        g_FontMemory = VK_NULL_HANDLE;
+    }
+}
 bool ImGui_ImplVulkan_CreateDeviceObjects()
 {
     ImGui_ImplVulkan_InitInfo* v = &g_VulkanInitInfo;
