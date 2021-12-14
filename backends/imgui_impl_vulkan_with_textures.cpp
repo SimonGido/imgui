@@ -49,7 +49,8 @@
 #include "imgui_impl_vulkan_with_textures.h"
 #include <stdio.h>
 
-#include "XYZ/API/Vulkan/VulkanRendererAPI.h"
+#include "XYZ/API/Vulkan/VulkanImGuiLayer.h"
+#include "XYZ/Core/Application.h"
 
 // Reusable buffers used for rendering 1 current in-flight frame, for ImGui_ImplVulkan_RenderDrawData()
 // [Please zero-clear before use!]
@@ -1287,7 +1288,9 @@ ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_vie
     alloc_info.descriptorSetCount = 1;
     alloc_info.pSetLayouts = &g_DescriptorSetLayout;
 
-    VkDescriptorSet descriptor_set = XYZ::VulkanRendererAPI::RT_AllocateDescriptorSet(g_DescriptorSetLayout);
+    XYZ::VulkanImGuiLayer* vulkanImGuiLayer = static_cast<XYZ::VulkanImGuiLayer*>(XYZ::Application::Get().GetImGuiLayer());
+    auto allocator = vulkanImGuiLayer->GetDescriptorAllocator();
+    VkDescriptorSet descriptor_set = allocator->RT_Allocate(g_DescriptorSetLayout);
     ImGui_ImplVulkan_UpdateTextureInfo(descriptor_set, sampler, image_view, image_layout);
     return (ImTextureID)descriptor_set;
 }
