@@ -1,5 +1,5 @@
-project "ImGui"
-	kind "StaticLib"
+project "ImGui"	
+	kind "StaticLib"	
 	language "C++"
 	staticruntime "off"
 
